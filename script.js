@@ -8,35 +8,36 @@ let operations = {
 
 let allValues = [];
 let preliminaryValue = [];
-document.querySelectorAll('.button').forEach((button) => {
-    
-    button.addEventListener("click", ()=>{
-        const display = document.querySelector('.display');
-        
-        if(button.id !== '='){
+document.querySelectorAll('.button').forEach((button) => {  
+    button.addEventListener("click", displayStore)
+})
+
+function displayStore(evt){
+    const display = document.querySelector('.display');
+    const btnId = evt.currentTarget.id;    
+        if(btnId !== '='){
             if(display.innerText === undefined){
-                display.innerText = button.id;
+                display.innerText = btnId;
             }else{
-                display.innerText = display.innerText + button.id;
+                display.innerText = display.innerText + btnId;
             }
-            if(button.id !== '+' && button.id !== '-' && button.id !== '×' && button.id !== '/'){
-                preliminaryValue.push(button.id);
+            if(btnId !== '+' && btnId !== '-' && btnId !== '×' && btnId !== '/'){
+                preliminaryValue.push(btnId);
             }else{
                 if(preliminaryValue.length !== 0){
                     allValues.push(preliminaryValue.join(''));     
                     preliminaryValue = [];
                 }
-                allValues.push(button.id);
+                allValues.push(btnId);
             }
         }else {
             allValues.push(preliminaryValue.join(''));
             preliminaryValue = []; 
-        }
-        console.log(allValues);
-                
-    })
-})
-
+            manager();
+            preliminaryValue[0] = allValues[0];
+            allValues.splice(0, 1);
+    }
+}
 
  
  function parseNegatives(){
@@ -79,13 +80,10 @@ document.querySelectorAll('.button').forEach((button) => {
     for(let j = 1; j<allValues.length; j = 1){
         allValues.splice(j-1, 3, operations[allValues[j]](parseFloat(allValues[j-1]), parseFloat(allValues[j+1])))
     }
-    console.log(allValues);
+    document.querySelector('.display').innerText = Math.round(allValues[0]*1000)/1000;
  }
 
 function manager(){
     parseNegatives();
     operate();
 }
-document.getElementById('=').addEventListener('click', manager);
-
-
