@@ -5,7 +5,6 @@ let operations = {
     '+': function(a, b){return a+b},
     '-': function(a, b){return a-b}
 };
-
 let allValues = [];
 let preliminaryValue = [];
 document.querySelectorAll('.button').forEach((button) => {  
@@ -39,21 +38,25 @@ function displayStore(evt){
     }
 }
 
+function indexNegative(){
+    let index = 0;
+    const split = allValues.reduce((obj, value) => {
+        if(value === '-'){
+           if(!obj[value]){
+               obj[value] = [];
+           }
+           obj[value].push(index);
+        }
+        index+=1;
+        return obj;
+    }, {})
+    return split;
+}
+
  
  function parseNegatives(){
-     let count = 0;
-     let index = 0;
-     const split = allValues.reduce((obj, value) => {
-         if(value === '-'){
-            if(!obj[value]){
-                obj[value] = [];
-            }
-            obj[value].push(index);
-         }
-         index+=1;
-         return obj;
-     }, {})
-     
+    let count = 0;
+    const split = indexNegative();
      if(Object.keys(split).length > 0){
         for(let i = 0; i<split['-'].length; i++){
             if(split['-'][i] == 0){
@@ -76,7 +79,6 @@ function displayStore(evt){
  };
 
  function operate(){
-    
     for(let j = 1; j<allValues.length; j = 1){
         allValues.splice(j-1, 3, operations[allValues[j]](parseFloat(allValues[j-1]), parseFloat(allValues[j+1])))
     }
