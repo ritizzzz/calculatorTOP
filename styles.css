@@ -69,10 +69,6 @@ div{
     color: white;
  }
 
- .click, .display{
-    box-shadow: 1px 2px 18px yellowgreen;
- }
-
  
 .calcBody{
     width: 350px;
@@ -86,8 +82,8 @@ div{
 
 .button:hover{
     cursor: pointer;
-    /*background: #414141*/;
-    background-color: rgba(31, 24, 14, 0.178);
+    background: #414141;
+    box-shadow: 1px 2px 18px black;
 }
 
 .special{
