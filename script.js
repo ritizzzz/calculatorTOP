@@ -9,9 +9,13 @@ let allValues = [];
 let preliminaryValue = [];
 document.querySelectorAll('.button').forEach((button) => {  
     button.addEventListener("click", displayStore)
+    button.addEventListener("mouseup", ()=> button.style.boxShadow  ="1px 2px 18px yellowgreen")
+    button.addEventListener("mousedown",  () =>   button.style.boxShadow = "0px 0px")
 })
 
 function displayStore(evt){
+    console.log(evt.currentTarget.classList)
+    evt.currentTarget.classList.remove('click');
     const display = document.querySelector('.display');
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
@@ -35,8 +39,10 @@ function displayStore(evt){
             manager();
             preliminaryValue[0] = allValues[0];
             allValues.splice(0, 1);
+            
     }
 }
+
 
 function indexNegative(){
     let index = 0;
@@ -86,6 +92,8 @@ function indexNegative(){
  }
 
 function manager(){
+
     parseNegatives();
     operate();
+
 }
