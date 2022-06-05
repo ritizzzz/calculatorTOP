@@ -7,14 +7,47 @@ let operations = {
 };
 let allValues = [];
 let preliminaryValue = [];
+const display = document.querySelector('.display');
 document.querySelectorAll('.button').forEach((button) => {  
-    button.addEventListener("click", displayStore)
     button.addEventListener("mousedown", ()=> button.style.boxShadow  ="1px 2px 18px black")
     button.addEventListener("mouseup",  () =>   button.style.boxShadow = "0px 0px")
+    if(button.id === 'C'){
+        button.addEventListener('click', clear)
+    }else if(button.id === 'bck'){
+        button.addEventListener('click', backspace)
+    }else{
+        button.addEventListener("click", displayStore);
+    }
 })
 
+function clear(){
+    preliminaryValue = [];
+    allValues = [];
+    display.innerText = '';
+}
+
+function backspace(){
+    if(preliminaryValue.length > 0){
+        preliminaryValue.splice(-1, 1);
+    }else{
+        if(allValues[allValues.length - 1].length > 1){
+            
+            preliminaryValue = allValues[allValues.length - 1].split('');
+            preliminaryValue.splice(-1, 1);
+            allValues.splice(-1, 1);
+            allValues.push(preliminaryValue.join(''));
+
+            preliminaryValue = [];
+        }else{
+            allValues.splice(-1, 1);
+        }
+        console.log(allValues)
+    }
+    display.innerText = display.innerText.substr(0, (display.innerText.length - 1));
+    
+}
+
 function displayStore(evt){
-    const display = document.querySelector('.display');
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
             if(display.innerText === undefined){
