@@ -80,6 +80,8 @@ function displayStore(evt){
             allValues.push(preliminaryValue.join(''));
             preliminaryValue = []; 
             manager();
+            display.style.fontSize = '40px';
+            avoidOverflow(display.clientWidth, displayWrapper.clientWidth);
             preliminaryValue[0] = allValues[0];
             allValues.splice(0, 1);
             
