@@ -1,13 +1,18 @@
-let operations = {
+
+const operations = {
     '.': function(a, b){return parseFloat(`${a}.${b}`)},
     '/': function(a, b){return a/b},
     '×': function(a, b){return a*b},
     '+': function(a, b){return a+b},
     '-': function(a, b){return a-b}
 };
+
 let allValues = [];
 let preliminaryValue = [];
 const display = document.querySelector('.display');
+let clumpedNegatives = 0;
+
+
 document.querySelectorAll('.button').forEach((button) => {  
     button.addEventListener("mousedown", ()=> button.style.boxShadow  ="1px 2px 18px black")
     button.addEventListener("mouseup",  () =>   button.style.boxShadow = "0px 0px")
@@ -19,6 +24,7 @@ document.querySelectorAll('.button').forEach((button) => {
         button.addEventListener("click", displayStore);
     }
 })
+
 
 function clear(){
     preliminaryValue = [];
@@ -50,7 +56,7 @@ function backspace(){
 function displayStore(evt){
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
-            if(display.innerText === undefined){
+            if(display.innerText === undefined || display.innerText === 'SYNTAX ERROR'){
                 display.innerText = btnId;
             }else{
                 display.innerText = display.innerText + btnId;
@@ -90,41 +96,66 @@ function indexNegative(){
     return split;
 }
 
- 
- function parseNegatives(){
-    let count = 0;
-    const split = indexNegative();
-     if(Object.keys(split).length > 0){
-        for(let i = 0; i<split['-'].length; i++){
-            if(split['-'][i] == 0){
-                allValues.splice(0, 2, `-${allValues[i+1]}`);
-                count  += 1;
-            }else if(allValues[split['-'][i]-count+1] == '-'){
-                allValues.splice(split['-'][i]-count, 2, '+');
-                count  += 1;
-            }else if(!isNaN(parseFloat(allValues[split['-'][i]-count+1])) && isNaN(parseFloat(allValues[split['-'][i]-count-1]))){
-                allValues.splice(split['-'][i]-count, 2, `-${allValues[split['-'][i]-count+1]}`);
-                count += 1;
-            }else if(!isNaN(parseFloat(allValues[split['-'][i]-count-1])) && isNaN(parseFloat(allValues[split['-'][i]-count+1]))){
-                allValues.splice(split['-'][i]-count, 1);
-                count += 1;
-                allValues.splice(split['-'][i]-count+2, 1, `-${allValues[split['-'][i]-count+2]}`);
-            }
-        }
-     }
-    
- };
 
- function operate(){
-    for(let j = 1; j<allValues.length; j = 1){
-        allValues.splice(j-1, 3, operations[allValues[j]](parseFloat(allValues[j-1]), parseFloat(allValues[j+1])))
-    }
-    document.querySelector('.display').innerText = Math.round(allValues[0]*1000)/1000;
- }
+
 
 function manager(){
-
     parseNegatives();
     operate();
-
 }
+function parseNegatives(){
+    let count = 0;
+    const split = indexNegative();
+    
+     if(Object.keys(split).length > 0){
+        for(let i = 0; i<split['-'].length; i++){
+            if((split['-'][i]+1) === split['-'][i+1]){
+                clumpedNegatives += 1;
+                if(allValues[(split['-'][i] -1)] !== '-' && isNaN(allValues[(split['-'][i] -1)])){
+                    clumpedNegatives += 1; 
+                }
+            }
+
+            if(clumpedNegatives < 2){
+                if(split['-'][i] == 0){
+                    allValues.splice(0, 2, `-${allValues[i+1]}`);
+                    count  += 1;
+                }else if(allValues[split['-'][i]-count+1] == '-'){
+                    allValues.splice(split['-'][i]-count, 2, '+');
+                    count  += 1;
+                }else if(!isNaN(parseFloat(allValues[split['-'][i]-count+1])) && isNaN(parseFloat(allValues[split['-'][i]-count-1]))){
+                    allValues.splice(split['-'][i]-count, 2, `-${allValues[split['-'][i]-count+1]}`);
+                    count += 1;
+                }else if(!isNaN(parseFloat(allValues[split['-'][i]-count-1])) && isNaN(parseFloat(allValues[split['-'][i]-count+1]))){
+                    allValues.splice(split['-'][i]-count, 1);
+                    count += 1;
+                    allValues.splice(split['-'][i]-count+2, 1, `-${allValues[split['-'][i]-count+2]}`);
+                }
+            }else{
+                allValues = [];
+                allValues[0] = NaN;
+            }
+            
+        }
+     }   
+ }
+function operate(){
+    try{
+        for(let j = 1; j<allValues.length; j = 1){
+            allValues.splice(j-1, 3, operations[allValues[j]](parseFloat(allValues[j-1]), parseFloat(allValues[j+1])));
+        }
+
+        if(allValues[0] === Infinity || isNaN(allValues[0])){
+            display.innerText = 'SYNTAX ERROR';
+            allValues = [];
+            preliminaryValue = [];
+        }else{
+            display.innerText = Math.round(allValues[0]*1000)/1000;
+        }
+    }
+    catch(err){
+        allValues = [];
+        preliminaryValue = [];
+        display.innerText = 'SYNTAX ERROR'
+    }
+ }
