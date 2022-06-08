@@ -10,6 +10,7 @@ const operations = {
 let allValues = [];
 let preliminaryValue = [];
 const display = document.querySelector('.display');
+const displayWrapper = document.querySelector('.displayWrapper');
 let clumpedNegatives = 0;
 
 
@@ -30,6 +31,7 @@ function clear(){
     preliminaryValue = [];
     allValues = [];
     display.innerText = '';
+    display.style.fontSize = '60px';
 }
 
 function backspace(){
@@ -49,11 +51,15 @@ function backspace(){
         }
         console.log(allValues)
     }
+    if(preliminaryValue.length === 0 && allValues.length === 0){
+        display.style.fontSize = '40px';
+    }
     display.innerText = display.innerText.substr(0, (display.innerText.length - 1));
     
 }
 
 function displayStore(evt){
+    avoidOverflow(display.clientWidth, displayWrapper.clientWidth);
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
             if(display.innerText === undefined || display.innerText === 'SYNTAX ERROR'){
@@ -80,6 +86,15 @@ function displayStore(evt){
     }
 }
 
+function avoidOverflow(widthDisplay, widthDisplayWrapper){
+    console.log(widthDisplay);
+    console.log(widthDisplayWrapper);
+
+    if(widthDisplay > (widthDisplayWrapper-20)){
+        let newFontSize = parseFloat(display.style.fontSize.substr(0, 2)) - 5;
+        display.style.fontSize = `${newFontSize}px`
+    }
+}
 
 function indexNegative(){
     let index = 0;
@@ -134,11 +149,13 @@ function parseNegatives(){
             }else{
                 allValues = [];
                 allValues[0] = NaN;
+                clumpedNegatives = 0;
             }
             
         }
      }   
  }
+ 
 function operate(){
     try{
         for(let j = 1; j<allValues.length; j = 1){
