@@ -31,7 +31,7 @@ function clear(){
     preliminaryValue = [];
     allValues = [];
     display.innerText = '';
-    display.style.fontSize = '60px';
+    display.style.fontSize = '40px';
 }
 
 function backspace(){
@@ -59,7 +59,7 @@ function backspace(){
 }
 
 function displayStore(evt){
-    avoidOverflow(display.clientWidth, displayWrapper.clientWidth);
+    avoidOverflow(displayWrapper.clientWidth);
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
             if(display.innerText === undefined || display.innerText === 'SYNTAX ERROR'){
@@ -81,20 +81,17 @@ function displayStore(evt){
             preliminaryValue = []; 
             manager();
             display.style.fontSize = '40px';
-            avoidOverflow(display.clientWidth, displayWrapper.clientWidth);
+            avoidOverflow(displayWrapper.clientWidth);
             preliminaryValue[0] = allValues[0];
             allValues.splice(0, 1);
             
     }
 }
 
-function avoidOverflow(widthDisplay, widthDisplayWrapper){
-    console.log(widthDisplay);
-    console.log(widthDisplayWrapper);
-
-    if(widthDisplay > (widthDisplayWrapper-20)){
-        let newFontSize = parseFloat(display.style.fontSize.substr(0, 2)) - 5;
-        display.style.fontSize = `${newFontSize}px`
+function avoidOverflow(widthDisplayWrapper){
+    while(display.clientWidth >  (widthDisplayWrapper-20)){
+        let newFontSize = parseFloat(display.style.fontSize.substr(0, 2)) - 1;
+        display.style.fontSize = `${newFontSize}px`;
     }
 }
 
