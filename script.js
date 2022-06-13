@@ -82,7 +82,11 @@ function displayStore(evt){
             manager();
             display.style.fontSize = '40px';
             avoidOverflow(displayWrapper.clientWidth);
-            preliminaryValue = allValues[0].toString().split('');
+            if(allValues[0].toString().length>1){
+               preliminaryValue = allValues[0].toString().split('');
+            }else{
+               preliminaryValue[0] = allValues[0];
+            }
             allValues.splice(0, 1);
             
     }
