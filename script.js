@@ -26,12 +26,15 @@ document.querySelectorAll('.button').forEach((button) => {
     }
 })
 
-
 function clear(){
-    preliminaryValue = [];
-    allValues = [];
+    clearArrays();
     display.innerText = '';
     display.style.fontSize = '40px';
+}
+
+function clearArrays(){
+    preliminaryValue = [];
+    allValues = [];
 }
 
 function backspace(){
@@ -62,7 +65,7 @@ function displayStore(evt){
     avoidOverflow(displayWrapper.clientWidth);
     const btnId = evt.currentTarget.id;    
         if(btnId !== '='){
-            if(display.innerText === undefined || display.innerText === 'SYNTAX ERROR'){
+            if(display.innerText === undefined || display.innerText === 'SYNTAX ERROR' || display.innerText === 'MATH ERROR'){
                 display.innerText = btnId;
             }else{
                 display.innerText = display.innerText + btnId;
@@ -82,14 +85,19 @@ function displayStore(evt){
             manager();
             display.style.fontSize = '40px';
             avoidOverflow(displayWrapper.clientWidth);
-            if(allValues[0].toString().length>1){
-               preliminaryValue = allValues[0].toString().split('');
-            }else{
-               preliminaryValue[0] = allValues[0];
-            }
-            allValues.splice(0, 1);
+            prepareNextCalculation();
+            
             
     }
+}
+
+function prepareNextCalculation(){
+    if(allValues[0].toString().length>1){
+        preliminaryValue = allValues[0].toString().split('');
+     }else{
+        preliminaryValue[0] = allValues[0];
+     }
+     allValues.splice(0, 1);
 }
 
 function avoidOverflow(widthDisplayWrapper){
@@ -121,6 +129,7 @@ function manager(){
     parseNegatives();
     operate();
 }
+
 function parseNegatives(){
     let count = 0;
     const split = indexNegative();
@@ -158,6 +167,8 @@ function parseNegatives(){
         }
      }   
  }
+
+
  
 function operate(){
     try{
@@ -165,17 +176,18 @@ function operate(){
             allValues.splice(j-1, 3, operations[allValues[j]](parseFloat(allValues[j-1]), parseFloat(allValues[j+1])));
         }
 
-        if(allValues[0] === Infinity || isNaN(allValues[0])){
+        if(isNaN(allValues[0])){
             display.innerText = 'SYNTAX ERROR';
-            allValues = [];
-            preliminaryValue = [];
+            clearArrays();
+        }else if(allValues[0] === Infinity){
+            display.innerText = 'MATH ERROR';
+            clearArrays();
         }else{
             display.innerText = Math.round(allValues[0]*1000)/1000;
         }
     }
     catch(err){
-        allValues = [];
-        preliminaryValue = [];
+        clearArrays();
         display.innerText = 'SYNTAX ERROR'
     }
- }
+}
