@@ -46,34 +46,35 @@ function clearArrays(){
 // backspace function
 function backspace(){
     //if value present in preliminary, delete the end value
-    if(preliminaryValue.length > 0){
-        preliminaryValue.splice(-1, 1);
-    }else{
-        // if the length of end value is greater than zero, 345
-        if(allValues[allValues.length - 1].length > 1){
-            // send it off too preliminary  3,4,5
-            preliminaryValue = allValues[allValues.length - 1].split('');
-            // splice it there 3,4
+    if(allValues.length>0 || preliminaryValue.length>0){
+        if(preliminaryValue.length > 0){
             preliminaryValue.splice(-1, 1);
-            //splice it off the allValues, 345 -> ---
-            allValues.splice(-1, 1);
-            // push the spliced preliminary to all values after joining, 34
-            allValues.push(preliminaryValue.join(''));
-            // set preliminary to zero
-            preliminaryValue = [];
         }else{
-            // if the length is just one, 3, just get rid of it, -
-            allValues.splice(-1, 1);
+            // if the length of end value is greater than zero, 345
+            if(allValues[allValues.length - 1].length > 1){
+                // send it off too preliminary  3,4,5
+                preliminaryValue = allValues[allValues.length - 1].split('');
+                // splice it there 3,4
+                preliminaryValue.splice(-1, 1);
+                //splice it off the allValues, 345 -> ---
+                allValues.splice(-1, 1);
+                // push the spliced preliminary to all values after joining, 34
+                allValues.push(preliminaryValue.join(''));
+                // set preliminary to zero
+                preliminaryValue = [];
+            }else{
+                // if the length is just one, 3, just get rid of it, -
+                allValues.splice(-1, 1);
+            }
         }
-    }
-    // if everything has been deleted
-    if(preliminaryValue.length === 0 && allValues.length === 0){
-        display.style.fontSize = '40px';
-    }
+        // if everything has been deleted
+        if(preliminaryValue.length === 0 && allValues.length === 0){
+            display.style.fontSize = '40px';
+        }
 
-    // display it
-    display.innerText = display.innerText.substr(0, (display.innerText.length - 1));
-    
+        // display it
+        display.innerText = display.innerText.substr(0, (display.innerText.length - 1));
+    }
 }
 
 function displayStore(evt){
@@ -105,12 +106,13 @@ function displayStore(evt){
             // to prevent error when user presses = without any values or after an error    
             if(allValues.length>0 || preliminaryValue.length>0){
                 // logic as stated on readme.md
-                allValues.push(preliminaryValue.join(''));
+                if(preliminaryValue.length>0){
+                    allValues.push(preliminaryValue.join(''));
+                }
                 preliminaryValue = []; 
                 manager();
                 display.style.fontSize = '40px';
                 avoidOverflow(displayWrapper.clientWidth);
-                prepareNextCalculation();        
             }else{
                 // set it to undefined
                 display.innerText === undefined;
@@ -120,6 +122,7 @@ function displayStore(evt){
 
 function prepareNextCalculation(){
     // send it to preliminary if the result has a length larger than 1
+    console.log(allValues[0])
     if(allValues[0].toString().length>1){
         preliminaryValue = allValues[0].toString().split('');
      }else{
@@ -230,6 +233,7 @@ function operate(){
         }else{
             // set display, the calculation has been done successfully
             display.innerText = Math.round(allValues[0]*1000)/1000;
+            prepareNextCalculation();   
         }
     }
     catch(err){
