@@ -1,4 +1,4 @@
-#CALCULATOR
+# CALCULATOR
 
 ### logic behind the calculator
 The logic behind the calculator is as follows. 
